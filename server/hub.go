@@ -41,8 +41,8 @@ func (h *Hub) run() {
 		case client := <-h.register:
 			log.Println("Registered new client")
 			h.clients[client] = true
-			
-			// unregistered case
+
+		// unregistered case
 		case client := <-h.unregister:
 			log.Println("Unregistered client")
 			if _, ok := h.clients[client]; ok {

@@ -53,7 +53,7 @@ func main() {
 	})
 
 	// point the main app to the dist directory created by svelte
-	app := AppHandler{staticPath: "app/dist", indexPath: "index.html"}
+	app := AppHandler{staticPath: "../app/dist", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(app)
 
 	// create the server itself

@@ -128,6 +128,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	// Register this client, triggering the select case in Hub->run()
 	client.hub.register <- client
 
 	// Allow collection of memory referenced by the caller by doing all work in

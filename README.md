@@ -13,3 +13,7 @@ Marker is a simple sharable white board application using websockets written in 
 - [ ] Add "rooms" feature
   - [ ] Backend handling of rooms with IDs 
   - [ ] Frontend for creating rooms
+
+## Design
+
+Follow the [design](https://www.figma.com/design/HUzjefdAllJMLkFTIRFzzC/Marker) on Figma
