@@ -4,22 +4,27 @@
   import { constructMessage } from "../state/messenger.svelte";
   import app from "../main";
   import { draw } from "svelte/transition";
+  import { throttle } from "../lib/throttle";
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D;
   let width = $state(window.innerWidth);
   let height = $state(window.innerHeight);
 
-  function mousemove(event: MouseEvent) {
-    const bounds = canvas.getBoundingClientRect();
-    const x = event.clientX - bounds.top;
-    const y = event.clientY - bounds.left;
+  const throttledCursorChange = throttle((from: string, x: number, y: number) => {
     appState.messenger?.connection?.send(constructMessage("cursor-change", {
-      from: "person",
+      from,
       data: {
         x, y
       }
     }))
+  }, 100);
+  
+  function mousemove(event: MouseEvent) {
+    const bounds = canvas.getBoundingClientRect();
+    const x = event.clientX - bounds.top;
+    const y = event.clientY - bounds.left;
+    throttledCursorChange("person", x, y);
   }
 
   function drawEllipse(x:number ,y: number) {
