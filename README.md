@@ -4,7 +4,7 @@ Marker is a simple sharable white board application using websockets written in 
 
 ## Roadmap
 
-- [ ] Implement basic app in svelte
+- [x] Implement basic app in svelte
 - [ ] Implement drawing
   - [ ] Create drawing board
   - [ ] Create the data structure for sending/receiving
