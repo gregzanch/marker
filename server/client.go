@@ -5,6 +5,7 @@
 package main
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 	"time"
@@ -68,7 +69,11 @@ func (c *Client) readPump() {
 			}
 			break
 		}
-		c.hub.broadcast <- message
+		messages := bytes.Split(message, newline)
+		for _, v := range messages {
+			v = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+			c.hub.broadcast <- v
+		}
 	}
 }
 
