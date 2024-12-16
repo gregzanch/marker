@@ -58,15 +58,18 @@ export class Messenger {
     this.status = "open";
   }
   onMessage(e: MessageEvent<string>) {
-    const data = JSON.parse(e.data) as EventMap[keyof EventMap];
-    switch (data.type) {
-      case "cursor-change":
-        this.onCursorChange(data);
-        break;
-      case "draw-ellipse":
-        this.onDrawEllipse(data);
-      default:
-        break;
+    const lines = e.data.split("\n");
+    for (const line of lines) {
+      const data = JSON.parse(line) as EventMap[keyof EventMap];
+      switch (data.type) {
+        case "cursor-change":
+          this.onCursorChange(data);
+          break;
+        case "draw-ellipse":
+          this.onDrawEllipse(data);
+        default:
+          break;
+      }
     }
   }
   addEventListener<T extends keyof EventMap>(

@@ -2,14 +2,14 @@
   import { onMount } from "svelte";
   import { appState } from "../state/appState.svelte";
   import { constructMessage } from "../state/messenger.svelte";
-  import app from "../main";
-  import { draw } from "svelte/transition";
   import { throttle } from "../lib/throttle";
+  import { Renderer } from "../lib/renderer/renderer";
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D;
   let width = $state(window.innerWidth);
   let height = $state(window.innerHeight);
+  let renderer = $state<Renderer | null>(null);
 
   const throttledCursorChange = throttle((from: string, x: number, y: number) => {
     appState.messenger?.connection?.send(constructMessage("cursor-change", {
@@ -24,12 +24,12 @@
     const bounds = canvas.getBoundingClientRect();
     const x = event.clientX - bounds.top;
     const y = event.clientY - bounds.left;
-    throttledCursorChange("person", x, y);
+    throttledCursorChange(appState.user, x * window.devicePixelRatio, y * window.devicePixelRatio);
   }
 
   function drawEllipse(x:number ,y: number) {
     context.beginPath();
-    context.ellipse(x,y,1,1,0,0,2*Math.PI);
+    context.ellipse(x,y,5,5,0,0,2*Math.PI);
     context.fillStyle = "#000000";
     context.fill();
   }
@@ -40,6 +40,8 @@
     if(!context) {
       appState.globalErrorMessage = "Failed to get canvas context."
     }
+    renderer = new Renderer(context);
+    Object.assign(window, {renderer});
     canvas.addEventListener("mousemove", mousemove);
     appState.messenger?.addEventListener("cursor-change", (data) => {
       const { x,y } = data.data;
@@ -58,7 +60,7 @@
 
 <style>
   canvas {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
   }
 </style>
