@@ -1,19 +1,19 @@
+import { Entity } from "../entities/entity";
+
 export class Renderer {
   context: CanvasRenderingContext2D;
+  entities: Entity[] = [];
   constructor(context: CanvasRenderingContext2D) {
     this.context = context;
     this.resize = this.resize.bind(this);
     window.addEventListener("resize", this.resize);
     this.resize();
   }
-  resize(event?: UIEvent) {
-    this.context.canvas.width = window.innerWidth;
-    this.context.canvas.height = window.innerHeight;
-    this.adjustForPixelRatio();
+
+  addEntity(entity: Entity) {
+    this.entities.push(entity);
   }
-  close() {
-    window.removeEventListener("resize", this.resize);
-  }
+
   draw() {
     this.context.clearRect(
       0,
@@ -21,8 +21,20 @@ export class Renderer {
       this.context.canvas.width,
       this.context.canvas.height
     );
+    for (const entity of this.entities) {
+      entity.draw();
+    }
   }
 
+  resize(event?: UIEvent) {
+    this.context.canvas.width = window.innerWidth;
+    this.context.canvas.height = window.innerHeight;
+    this.adjustForPixelRatio();
+    this.draw();
+  }
+  close() {
+    window.removeEventListener("resize", this.resize);
+  }
   adjustForPixelRatio() {
     this.context.canvas.setAttribute(
       "width",

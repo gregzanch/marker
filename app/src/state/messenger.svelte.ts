@@ -1,6 +1,9 @@
 export interface EventMap {
   "cursor-change": {
-    from: string;
+    from: {
+      id: string;
+      name: string;
+    };
     type: "cursor-change";
     data: {
       x: number;
@@ -8,7 +11,10 @@ export interface EventMap {
     };
   };
   "draw-ellipse": {
-    from: string;
+    from: {
+      id: string;
+      name: string;
+    };
     type: "draw-ellipse";
     data: { x: number; y: number; rx: number; ry: number; color: string };
   };
