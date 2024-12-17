@@ -1,16 +1,12 @@
-// Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 package main
 
 import (
 	"log"
 )
 
-// Hub maintains the set of active clients and broadcasts messages to the
+// Room maintains the set of active clients and broadcasts messages to the
 // clients.
-type Hub struct {
+type Room struct {
 	// Registered clients.
 	clients map[*Client]bool
 
@@ -24,8 +20,8 @@ type Hub struct {
 	unregister chan *Client
 }
 
-func newHub() *Hub {
-	return &Hub{
+func newRoom() *Room {
+	return &Room{
 		clients:    make(map[*Client]bool),
 		broadcast:  make(chan []byte),
 		register:   make(chan *Client),
@@ -33,7 +29,7 @@ func newHub() *Hub {
 	}
 }
 
-func (h *Hub) run() {
+func (h *Room) run() {
 	// loops on client open / close / message
 	for {
 		select {

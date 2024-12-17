@@ -40,16 +40,16 @@ func (h AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	// create a new websocket hub
-	hub := newHub()
-	go hub.run()
+	// create a new websocket room
+	room := newRoom()
+	go room.run()
 
 	// create the server router to handle different paths
 	router := mux.NewRouter()
 	
 	// handle the websocket route before the "catch all" handler
 	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, w, r)
+		serveWs(room, w, r)
 	})
 
 	// point the main app to the dist directory created by svelte

@@ -17,3 +17,6 @@ Marker is a simple sharable white board application using websockets written in 
 ## Design
 
 Follow the [design](https://www.figma.com/design/HUzjefdAllJMLkFTIRFzzC/Marker) on Figma
+
+## Notes
+
