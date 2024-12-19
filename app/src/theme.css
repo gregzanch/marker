@@ -1,0 +1,67 @@
+:root {
+  /*  normal color theme */
+  --color-primary: #30ABE8;
+  --color-mono-lightest: #fbfaf9;
+  --color-mono-lighter: #f2f0ed;
+  --color-mono-light: #ccc5b9;
+  --color-mono-dark: #56534e;
+  --color-mono-darker: #22211f;
+  --color-mono-darkest: #0d0d0c;
+  --color-mono-yellow: #ffd13c;
+  --color-mono-blue: #98c1d8;
+  --color-mono-green: #5fa300;
+  --color-mono-red: #eb5e27;
+  /*  color theme tuned down for contrast*/
+  --color-primary-down: #1791CF;
+  --color-mono-lightest-down: #ebe6e0;
+  --color-mono-lighter-down: #ddd8d0;
+  --color-mono-light-down: #b8ae9e;
+  --color-mono-dark-down: #353431;
+  --color-mono-darker-down: #0d0d0c;
+  --color-mono-darkest-down: #3d3d38;
+  --color-mono-yellow-down: #ffc50a;
+  --color-mono-blue-down: #7eb1ce;
+  --color-mono-green-down: #4d8500;
+  --color-mono-red-down: #d74b14;
+  /* spacings */
+  --spacing-0: 0px;
+  --spacing-050: 2px;
+  --spacing-100: 4px;
+  --spacing-150: 6px;
+  --spacing-200: 8px;
+  --spacing-300: 12px;
+  --spacing-400: 16px;
+  --spacing-600: 24px;
+  --spacing-800: 32px;
+  --spacing-1200: 48px;
+  --spacing-2400: 96px;
+  --spacing-4000: 160px;
+
+  /* font sizes */
+  --font-size-smallest: 10px;
+  --font-size-smaller: 12px;
+  --font-size-small: 14px;
+  --font-size-regular: 16px;
+  --font-size-large: 24px;
+  --font-size-larger: 32px;
+  --font-size-largest: 48px;
+}
+
+body,
+body[theme="light"] {
+  --mono-lightest: var(--color-mono-lightest);
+  --mono-lighter: var(--color-mono-lighter);
+  --mono-light: var(--color-mono-light);
+  --mono-dark: var(--color-mono-dark);
+  --mono-darker: var(--color-mono-darker);
+  --mono-darkest: var(--color-mono-darkest);
+}
+
+body[theme="dark"] {
+  --mono-lightest: var(--color-mono-darkest);
+  --mono-lighter: var(--color-mono-darker);
+  --mono-light: var(--color-mono-dark);
+  --mono-dark: var(--color-mono-light);
+  --mono-darker: var(--color-mono-lighter);
+  --mono-darkest: var(--color-mono-lightest);
+}

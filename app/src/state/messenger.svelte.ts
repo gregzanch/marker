@@ -46,6 +46,10 @@ export class Messenger {
     if (!window["WebSocket"]) {
       throw new Error("Your browser does not support WebSockets.");
     }
+    this.initiateConnection().catch(console.error); 
+  }
+
+  async initiateConnection() {
     const pathParts = document.location.pathname
       .split("/")
       .filter((str) => str);
@@ -53,14 +57,21 @@ export class Messenger {
     if (!roomId) {
       return;
     }
-    this.connection = new WebSocket(
-      "ws://" + document.location.host + "/ws/" + roomId
-    );
-    this.connection.addEventListener("open", this.open.bind(this));
-    this.connection.addEventListener("close", this.close.bind(this));
-    this.connection.addEventListener("message", this.onMessage.bind(this));
-    this.connection.addEventListener("error", this.onError.bind(this));
+    try {
+      this.connection = new WebSocket(
+        "ws://" + document.location.host + "/ws/" + roomId
+      );
+
+      this.connection.addEventListener("open", this.open.bind(this));
+      this.connection.addEventListener("close", this.close.bind(this));
+      this.connection.addEventListener("message", this.onMessage.bind(this));
+      this.connection.addEventListener("error", this.onError.bind(this));
+      this.open();
+    } catch {
+      this.close();
+    }
   }
+
   onError(event: Event) {
     console.error(event);
   }

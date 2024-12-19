@@ -18,43 +18,41 @@ type Room struct {
 
 	// Unregister requests from clients.
 	unregister chan *Client
+
+	appState *AppState
+	name string
+	id string
 }
 
-func newRoom() *Room {
-	return &Room{
-		clients:    make(map[*Client]bool),
-		broadcast:  make(chan []byte),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-	}
-}
-
-func (h *Room) run() {
+func (room *Room) run() {
 	// loops on client open / close / message
 	for {
 		select {
 		// registered case
-		case client := <-h.register:
+		case client := <-room.register:
 			log.Println("Registered new client")
-			h.clients[client] = true
+			room.clients[client] = true
 
 		// unregistered case
-		case client := <-h.unregister:
+		case client := <-room.unregister:
 			log.Println("Unregistered client")
-			if _, ok := h.clients[client]; ok {
-				delete(h.clients, client)
+			if _, ok := room.clients[client]; ok {
+				delete(room.clients, client)
 				close(client.send)
+				if len(room.clients) == 0 {
+					room.appState.removeRoom(room.id)
+				}
 			}
 
 		// on message
-		case message := <-h.broadcast:
+		case message := <-room.broadcast:
 			log.Printf("Message received '%s'", message)
-			for client := range h.clients {
+			for client := range room.clients {
 				select {
 				case client.send <- message:
 				default:
 					close(client.send)
-					delete(h.clients, client)
+					delete(room.clients, client)
 				}
 			}
 		}
