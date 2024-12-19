@@ -38,21 +38,28 @@ export class Messenger {
   /** Websocket Connection */
   connection?: WebSocket = $state();
   status = $state<"open" | "closed">("closed");
-  eventListeners: EventListenerMap;
+  eventListeners: EventListenerMap = {
+    "cursor-change": [],
+    "draw-ellipse": [],
+  };
   constructor() {
     if (!window["WebSocket"]) {
       throw new Error("Your browser does not support WebSockets.");
     }
-    this.connection = new WebSocket("ws://" + document.location.host + "/ws");
+    const pathParts = document.location.pathname
+      .split("/")
+      .filter((str) => str);
+    const roomId = pathParts[0];
+    if (!roomId) {
+      return;
+    }
+    this.connection = new WebSocket(
+      "ws://" + document.location.host + "/ws/" + roomId
+    );
     this.connection.addEventListener("open", this.open.bind(this));
     this.connection.addEventListener("close", this.close.bind(this));
     this.connection.addEventListener("message", this.onMessage.bind(this));
     this.connection.addEventListener("error", this.onError.bind(this));
-    this.connection.removeEventListener;
-    this.eventListeners = {
-      "cursor-change": [],
-      "draw-ellipse": [],
-    };
   }
   onError(event: Event) {
     console.error(event);

@@ -47,6 +47,7 @@
 
     canvas.addEventListener("mousemove", mousemove);
     appState.messenger?.addEventListener("cursor-change", (data) => {
+      console.log(data);
       const { data: {x, y}, from: {name, id} } = data;
       cursor.position.set(x,y);
     })
