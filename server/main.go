@@ -26,6 +26,7 @@ func (appHandler AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, ok := uuid.Parse(queriedPath)
 	if ok == nil && appHandler.appState.rooms[queriedPath] == nil {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
 	
 	// check whether a file exists or is a directory at the given path

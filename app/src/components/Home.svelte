@@ -1,19 +1,32 @@
 <script lang="ts">
-import Logo from "./Logo.svelte";
+  import Logo from "./Logo.svelte";
+  import Form from "./Form.svelte";
+  let page = $state<"home" | "create" | "join">("home");
 
+  function oncancel() {
+    page = "home";
+  }
 </script>
 
 <div class="page-container">
   <nav>
-    marker
-  </nav>
+    <span class="marker-logo">marker</span></nav>
   <div class="vertical">
-    <Logo />
-    <button><a href="/new/abcdefg">Create Room</a></button>
+    {#if page === "home"}
+      <Logo />
+      <button class="primary" onclick={() => (page = "create")}>Create Room</button>
+    {:else}
+      <Form {oncancel} type={page}  />
+    {/if}
   </div>
 </div>
 
 <style>
+
+  .marker-logo {
+    font-size: 36px;
+    font-family: marker;
+  }
   .page-container {
     width: 100vw;
     height: 100vh;
@@ -28,7 +41,8 @@ import Logo from "./Logo.svelte";
   }
   nav {
     position: absolute;
-    top: var(--spacing-100);
-    left: var(--spacing-100);
+    top: 0px;
+    left: 0px;
+    padding: var(--spacing-200) var(--spacing-600);
   }
 </style>

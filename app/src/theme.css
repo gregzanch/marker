@@ -36,7 +36,6 @@
   --spacing-1200: 48px;
   --spacing-2400: 96px;
   --spacing-4000: 160px;
-
   /* font sizes */
   --font-size-smallest: 10px;
   --font-size-smaller: 12px;
@@ -45,7 +44,17 @@
   --font-size-large: 24px;
   --font-size-larger: 32px;
   --font-size-largest: 48px;
+  /* weights */
+    --font-weight-light: 150;
+    --font-weight-medium: 400;
+    --font-weight-bold: 800;
+    /* radius */
+    --input-radius: 8px;
+  
+    --input-padding-horizontal: 12px;
+    --input-padding-vertical: 8px;
 }
+
 
 body,
 body[theme="light"] {
@@ -64,4 +73,27 @@ body[theme="dark"] {
   --mono-dark: var(--color-mono-light);
   --mono-darker: var(--color-mono-lighter);
   --mono-darkest: var(--color-mono-lightest);
+}
+input[type="text"],
+input[type="number"] {
+  border-radius: var(--input-radius);
+  border: solid 1px var(--mono-light);
+  background-color: var(--mono-lighter);
+  color: var(--mono-darker);
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+}
+
+button {
+  border-radius: var(--input-radius);
+  border: solid 1px var(--mono-darker);
+  background-color: var(--mono-lighter);
+  color: var(--mono-darker);
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+}
+
+button.primary {
+  background-color: var(--color-primary-down);
+  border-color: var(--color-primary-down);
+  color: var(--color-mono-lighter);
+  font-weight: var(--font-size-smaller);
 }

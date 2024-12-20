@@ -1,4 +1,12 @@
 export interface EventMap {
+  "user-joined": {
+    from: {
+      id: string;
+      name: string;
+    };
+    type: "user-joined";
+    data: {};
+  };
   "cursor-change": {
     from: {
       id: string;
@@ -41,12 +49,13 @@ export class Messenger {
   eventListeners: EventListenerMap = {
     "cursor-change": [],
     "draw-ellipse": [],
+    "user-joined": [],
   };
   constructor() {
     if (!window["WebSocket"]) {
       throw new Error("Your browser does not support WebSockets.");
     }
-    this.initiateConnection().catch(console.error); 
+    this.initiateConnection().catch(console.error);
   }
 
   async initiateConnection() {
@@ -61,7 +70,6 @@ export class Messenger {
       this.connection = new WebSocket(
         "ws://" + document.location.host + "/ws/" + roomId
       );
-
       this.connection.addEventListener("open", this.open.bind(this));
       this.connection.addEventListener("close", this.close.bind(this));
       this.connection.addEventListener("message", this.onMessage.bind(this));
@@ -86,6 +94,9 @@ export class Messenger {
     for (const line of lines) {
       const data = JSON.parse(line) as EventMap[keyof EventMap];
       switch (data.type) {
+        case "user-joined":
+          this.onUserJoined(data);
+          break;
         case "cursor-change":
           this.onCursorChange(data);
           break;
@@ -119,6 +130,11 @@ export class Messenger {
   }
   onDrawEllipse(event: EventMap["draw-ellipse"]) {
     for (const listener of this.eventListeners["draw-ellipse"]) {
+      listener(event);
+    }
+  }
+  onUserJoined(event: EventMap["user-joined"]) {
+    for (const listener of this.eventListeners["user-joined"]) {
       listener(event);
     }
   }

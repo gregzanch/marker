@@ -32,6 +32,16 @@
   }
 
   onMount(() => {
+
+    const userName: string = localStorage.get("marker-user-name");
+    appState.messenger?.connection?.send(constructMessage("user-joined", {
+      from: {
+        name: userName,
+        id: appState.id,
+      },
+      data: {}
+    }))
+
     canvas = document.getElementById("board") as HTMLCanvasElement;
     context = canvas.getContext("2d")!;
     if(!context) {
@@ -39,8 +49,6 @@
     }
     renderer = new Renderer(context);
     Object.assign(window, {renderer});
-
-    
 
     const cursor = new Cursor(context);
     renderer.addEntity(cursor);
