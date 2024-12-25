@@ -1,5 +1,7 @@
 import { nanoid } from "nanoid";
-import { Messenger } from "./messenger.svelte";
+import { Messenger, type EventMap } from "./messenger.svelte";
+
+type User = EventMap["user-joined"]["from"];
 
 class AppState {
   /** Messenger to handle communication with server */
@@ -10,6 +12,8 @@ class AppState {
   name: string = $state("anonymous");
   /** id */
   id: string = nanoid();
+  /** Connected Users */
+  users: Record<string, User> = {};
   constructor() {
     try {
       this.messenger = new Messenger();

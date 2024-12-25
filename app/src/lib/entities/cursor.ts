@@ -8,12 +8,13 @@ export type CursorOptions = {
   size: number;
 };
 
-const defaultCursorOptions: CursorOptions = {
-  visible: true,
-  name: "cursor",
-  position: vec2(0, 0),
-  size: 5,
-};
+const defaultCursorOptions = () =>
+  ({
+    visible: true,
+    name: "cursor",
+    position: vec2(0, 0),
+    size: 5,
+  } as CursorOptions);
 
 export class Cursor extends Entity {
   public size: number;
@@ -21,7 +22,7 @@ export class Cursor extends Entity {
     context: CanvasRenderingContext2D,
     options: Partial<CursorOptions> = {}
   ) {
-    const opts = { ...defaultCursorOptions, ...options };
+    const opts = { ...defaultCursorOptions(), ...options };
     super(context, opts);
     this.size = opts.size;
   }

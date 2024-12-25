@@ -12,67 +12,83 @@
   let height = $state(window.innerHeight);
   let renderer = $state<Renderer | null>(null);
 
-  const throttledCursorChange = throttle((name: string, id: string, x: number, y: number) => {
-    appState.messenger?.connection?.send(constructMessage("cursor-change", {
-      from: {
-        name,
-        id,
-      },
-      data: {
-        x, y
-      }
-    }))
-  }, 100);
-  
-  function mousemove(event: MouseEvent) {
-    const bounds = canvas.getBoundingClientRect();
-    const x = event.clientX - bounds.top;
-    const y = event.clientY - bounds.left;
-    throttledCursorChange(appState.name, appState.id, x * window.devicePixelRatio, y * window.devicePixelRatio);
-  }
-
   onMount(() => {
-
-    const userName: string = localStorage.get("marker-user-name");
-    appState.messenger?.connection?.send(constructMessage("user-joined", {
-      from: {
-        name: userName,
-        id: appState.id,
-      },
-      data: {}
-    }))
-
+    const userName = localStorage?.getItem("userName");
+    if (userName) {
+      appState.name = userName;
+    }
     canvas = document.getElementById("board") as HTMLCanvasElement;
     context = canvas.getContext("2d")!;
-    if(!context) {
-      appState.globalErrorMessage = "Failed to get canvas context."
+    if (!context) {
+      appState.globalErrorMessage = "Failed to get canvas context.";
     }
     renderer = new Renderer(context);
-    Object.assign(window, {renderer});
+    Object.assign(window, { renderer });
 
-    const cursor = new Cursor(context);
-    renderer.addEntity(cursor);
+    const cursors = new Map<string, Cursor>([
+      [appState.id, new Cursor(context)],
+    ]);
+    renderer.addEntity(cursors.get(appState.id)!);
+
+    const throttledCursorChange = throttle(
+      (name: string, id: string, x: number, y: number) => {
+        appState.messenger?.connection?.send(
+          constructMessage("cursor-change", {
+            from: {
+              name,
+              id,
+            },
+            data: {
+              x,
+              y,
+            },
+          })
+        );
+      },
+      100
+    );
+
+    function mousemove(event: MouseEvent) {
+      const bounds = canvas.getBoundingClientRect();
+      const x = (event.clientX - bounds.top) * window.devicePixelRatio;
+      const y = (event.clientY - bounds.left) * window.devicePixelRatio;
+      // set the position of our own cursor.
+      cursors.get(appState.id)?.position.set(x, y);
+      // send a message to everyone that our own cursor moved
+      throttledCursorChange(
+        appState.name,
+        appState.id,
+        x,
+        y
+      );
+    }
 
     canvas.addEventListener("mousemove", mousemove);
     appState.messenger?.addEventListener("cursor-change", (data) => {
-      console.log(data);
-      const { data: {x, y}, from: {name, id} } = data;
-      cursor.position.set(x,y);
-    })
+      const {
+        data: { x, y },
+        from: { name, id },
+      } = data;
+      console.log(renderer, id);
+      if (id === appState.id) return;
+      if (!cursors.has(id)) {
+        cursors.set(id, new Cursor(context));
+        renderer?.addEntity(cursors.get(id)!);
+      }
+      cursors.get(id)!.position.set(x, y);
+    });
 
     const interval = setInterval(() => {
       requestAnimationFrame(() => {
-        renderer?.draw()
-      })
-    }, 1000/60);
+        renderer?.draw();
+      });
+    }, 1000 / 60);
 
     return () => {
       canvas.removeEventListener("mousemove", mousemove);
       clearInterval(interval);
-    }
-
-  })
-  
+    };
+  });
 </script>
 
 <canvas id="board" {width} {height}></canvas>

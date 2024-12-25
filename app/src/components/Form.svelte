@@ -1,5 +1,8 @@
 <script lang="ts">
   import { nanoid } from "nanoid";
+  import { appState } from "../state/appState.svelte";
+  import { constructMessage } from "../state/messenger.svelte";
+  import app from "../main";
 
   type RoomFormData = {
     roomName: string;
@@ -12,6 +15,28 @@
   };
 
   let { oncancel, type }: FormProps = $props();
+
+  async function createNewRoom(data: RoomFormData) {
+    const res = await fetch("/new", {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+      method: "POST",
+    });
+    const json = await res.json();
+    localStorage.setItem("userName", json.userName);
+    appState.messenger?.connection?.send(constructMessage("user-joined", {
+      from: {
+        name: json.userName,
+        id: appState.id,
+      },
+      data: {},
+    }))
+    window.location.assign(`/${json.id}`)
+  }
+
 </script>
 
 <form
@@ -19,21 +44,21 @@
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData) as RoomFormData;
-    localStorage.setItem("marker-user-name", data.userName);
-    window.location.assign(`/new/${data.roomName}`)
+
+    createNewRoom(data).catch(console.error);
   }}
 >
   <h1>{type === "create" ? "New Room" : "Join Room"}</h1>
   <div>
     <label for="room-name">Room Name</label>
-    <input type="text" id="room-name" name="room-name" />
+    <input type="text" id="room-name" name="roomName" />
   </div>
   <div>
     <label for="user-name">User Name</label>
-    <input type="text" id="user-name" name="user-name" />
+    <input type="text" id="user-name" name="userName" />
   </div>
   <div class="actions">
-    <button onclick={oncancel}>Cancel</button>
+    <button type="button" onclick={oncancel}>Cancel</button>
     <button type="submit" class="primary">Create Room</button>
   </div>
 </form>
