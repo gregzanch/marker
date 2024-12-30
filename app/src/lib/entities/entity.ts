@@ -6,11 +6,12 @@ export type EntityOptions = {
   position: Vec2;
 };
 
-const defaultEntityOptions: EntityOptions = {
-  visible: true,
-  name: "entity",
-  position: vec2(0, 0),
-};
+const defaultEntityOptions = () =>
+  ({
+    visible: true,
+    name: "entity",
+    position: vec2(0, 0),
+  } as EntityOptions);
 
 export class Entity {
   public visible: boolean;
@@ -22,7 +23,10 @@ export class Entity {
     context: CanvasRenderingContext2D,
     options: Partial<EntityOptions> = {}
   ) {
-    const { name, visible, position } = { ...defaultEntityOptions, ...options };
+    const { name, visible, position } = {
+      ...defaultEntityOptions(),
+      ...options,
+    };
     this.name = name;
     this.visible = visible;
     this.position = position;

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 )
 
 // Room maintains the set of active clients and broadcasts messages to the
@@ -19,12 +20,21 @@ type Room struct {
 	// Unregister requests from clients.
 	unregister chan *Client
 
+	// access to app state
 	appState *AppState
+
+	// name of the room
 	name string
+
+	// id of the room
 	id string
+
+	// the last time this room was empty, used for cleanup
+	lastEmpty int64
 }
 
 func (room *Room) run() {
+
 	// loops on client open / close / message
 	for {
 		select {
@@ -40,7 +50,7 @@ func (room *Room) run() {
 				delete(room.clients, client)
 				close(client.send)
 				if len(room.clients) == 0 {
-					room.appState.removeRoom(room.id)
+					room.lastEmpty = time.Now().UnixMilli();
 				}
 			}
 

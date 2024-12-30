@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { nanoid } from "nanoid";
+  import { onMount } from "svelte";
   import { appState } from "../state/appState.svelte";
   import { constructMessage } from "../state/messenger.svelte";
-  import app from "../main";
 
   type RoomFormData = {
     roomName: string;
@@ -10,23 +9,24 @@
   };
 
   type FormProps = {
-    oncancel: () => void;
     type: "create" | "join";
   };
 
-  let { oncancel, type }: FormProps = $props();
+  let { type }: FormProps = $props();
+
+  let isLoading = $state(true);
 
   async function createNewRoom(data: RoomFormData) {
     const res = await fetch("/new", {
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        "Accept": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(data),
       method: "POST",
     });
     const json = await res.json();
-    localStorage.setItem("userName", json.userName);
+    appState.name = data.userName;
     appState.messenger?.connection?.send(constructMessage("user-joined", {
       from: {
         name: json.userName,
@@ -34,8 +34,40 @@
       },
       data: {},
     }))
-    window.location.assign(`/${json.id}`)
+    appState.navigate("board", {
+      id: json.id
+    })
   }
+
+  async function getRoomName(id: string): Promise<string> {
+    const res = await fetch("/getRoomName", {
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id }),
+      method: "POST"
+    });
+    const json = await res.json();
+    return json.name
+  }
+
+  onMount(() => {
+    const roomNameElement = document.getElementById("room-name")!;
+    if(type==="join") {
+      let id = appState.boardId || (new URL(window.location.toString())).searchParams.get("id");
+      if(!id){
+        alert("No room found!")
+        appState.navigate("");
+        return;
+      }
+
+      getRoomName(id).then(name => roomNameElement.setAttribute("value", name)).catch(() => {
+        alert("Room does not exist!")
+        appState.navigate("");
+      });
+    }
+  });
 
 </script>
 
@@ -44,22 +76,26 @@
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData) as RoomFormData;
-
-    createNewRoom(data).catch(console.error);
+    if(type==="create") {
+      createNewRoom(data).catch(console.error);
+    } else {
+      appState.name = data.userName;
+      appState.navigate("board")
+    }
   }}
 >
   <h1>{type === "create" ? "New Room" : "Join Room"}</h1>
   <div>
     <label for="room-name">Room Name</label>
-    <input type="text" id="room-name" name="roomName" />
+    <input type="text" id="room-name" name="roomName" disabled={type === "join"} />
   </div>
   <div>
     <label for="user-name">User Name</label>
     <input type="text" id="user-name" name="userName" />
   </div>
   <div class="actions">
-    <button type="button" onclick={oncancel}>Cancel</button>
-    <button type="submit" class="primary">Create Room</button>
+    <a href="/"><button type="button">Cancel</button></a>
+    <button type="submit" class="primary">{type==="create"?"Create Room":"Join Room"}</button>
   </div>
 </form>
 

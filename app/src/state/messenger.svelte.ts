@@ -51,7 +51,7 @@ export class Messenger {
     "draw-ellipse": [],
     "user-joined": [],
   };
-  constructor() {
+  constructor(public id: string) {
     if (!window["WebSocket"]) {
       throw new Error("Your browser does not support WebSockets.");
     }
@@ -59,16 +59,9 @@ export class Messenger {
   }
 
   async initiateConnection() {
-    const pathParts = document.location.pathname
-      .split("/")
-      .filter((str) => str);
-    const roomId = pathParts[0];
-    if (!roomId) {
-      return;
-    }
     try {
       this.connection = new WebSocket(
-        "ws://" + document.location.host + "/ws/" + roomId
+        "ws://" + document.location.host + "/ws/" + this.id
       );
       this.connection.addEventListener("open", this.open.bind(this));
       this.connection.addEventListener("close", this.close.bind(this));

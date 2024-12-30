@@ -23,6 +23,15 @@
   --color-mono-blue-down: #7eb1ce;
   --color-mono-green-down: #4d8500;
   --color-mono-red-down: #d74b14;
+  /* participant colors */
+    --color-participant-red: #ff6d6d;
+    --color-participant-orange: #ffb964;
+    --color-participant-yellow: #faff76;
+    --color-participant-green: #90ff7a;
+    --color-participant-cyan: #5cf1ff;
+    --color-participant-blue: #609dff;
+    --color-participant-purple: #8771ff;
+    --color-participant-pink: #ff83ff;
   /* spacings */
   --spacing-0: 0px;
   --spacing-050: 2px;

@@ -1,10 +1,9 @@
 <script lang="ts">
   import { appState } from "../state/appState.svelte";
+  import Form from "./Form.svelte";
   import Layout from "./Layout.svelte";
-  import Logo from "./Logo.svelte";
 </script>
 
 <Layout>
-  <Logo />
-  <a href="/create"><button class="primary">Create Room</button></a>
+  <Form type="create"></Form>
 </Layout>

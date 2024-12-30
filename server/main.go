@@ -79,6 +79,7 @@ func main() {
 			broadcast:  make(chan []byte),
 			register:   make(chan *Client),
 			unregister: make(chan *Client),
+			lastEmpty: 	time.Now().UnixMilli(),
 		}
 		var responseMessage struct {
 			ID string `json:"id"`
@@ -91,6 +92,29 @@ func main() {
 		json.NewEncoder(w).Encode(responseMessage)
 
 	}).HeadersRegexp("Content-Type", "application/json").Methods("POST")
+
+	router.HandleFunc("/getRoomName", func(w http.ResponseWriter, r *http.Request) {
+		var d struct {
+			ID string `json:"id"`
+		}
+
+		err := json.NewDecoder(r.Body).Decode(&d)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		var responseMessage struct {
+			Name string `json:"name"`
+		}
+
+		if val, ok := appState.rooms[d.ID]; ok {
+			responseMessage.Name = val.name
+			json.NewEncoder(w).Encode(responseMessage)
+		} else {
+			http.NotFound(w, r)
+		}
+
+	}).HeadersRegexp("Content-Type", "application/json").Methods("POST", "GET")
 
 	// handle the websocket route before the "catch all" handler
 	router.HandleFunc("/ws/{id}", func(w http.ResponseWriter, r *http.Request) {
@@ -128,6 +152,8 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
+
+	
 
 	log.Fatal(srv.ListenAndServe())
 }
