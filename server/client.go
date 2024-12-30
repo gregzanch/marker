@@ -44,16 +44,15 @@ type Client struct {
 	// mutex lock
 	lock sync.Mutex
 	// When the client was initialized
-	JoinedAt time.Time `json:"joinedAt,omitempty"`
+	JoinedAt time.Time `json:"-"`
 	// IP of the client
-	IPAddress string `json:"ipAddress,omitempty"`
+	IPAddress string `json:"-"`
 	// user defined name
-	UserName string `json:"userName,omitempty"`
-	// Some sort of jwt
-	EntryToken string `json:"entryToken,omitempty"`
+	UserName string `json:"name,omitempty"`
 	// Color defined for the user
 	Color string `json:"color,omitempty"`
-
+	// users id
+	ID string `json:"id"`
 }
 
 // readPump pumps messages from the websocket connection to the room.
@@ -132,13 +131,22 @@ func (c *Client) writePump() {
 }
 
 // serveWs handles websocket requests from the peer.
-func serveWs(room *Room, w http.ResponseWriter, r *http.Request) {
+func serveWs(room *Room, name string, userId string, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	client := &Client{room: room, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{
+		room: room,
+		conn: conn,
+		send: make(chan []byte, 256),
+		IPAddress: r.RemoteAddr,
+		UserName: name,
+		Color: GetRandomColor(),
+		JoinedAt: time.Now(),
+		ID: userId,
+	}
 	// Register this client, triggering the select case in Room->run()
 	client.room.register <- client
 
