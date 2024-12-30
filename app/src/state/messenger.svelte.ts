@@ -1,3 +1,5 @@
+import { appState } from "./appState.svelte";
+
 export interface EventMap {
   "user-joined": {
     from: {
@@ -61,13 +63,14 @@ export class Messenger {
   async initiateConnection() {
     try {
       this.connection = new WebSocket(
-        "ws://" + document.location.host + "/ws/" + this.id
+        `ws://${document.location.host}/ws/${this.id}/${appState.name!}/${
+          appState.id
+        }`
       );
       this.connection.addEventListener("open", this.open.bind(this));
       this.connection.addEventListener("close", this.close.bind(this));
       this.connection.addEventListener("message", this.onMessage.bind(this));
       this.connection.addEventListener("error", this.onError.bind(this));
-      this.open();
     } catch {
       this.close();
     }
@@ -81,6 +84,12 @@ export class Messenger {
   }
   open() {
     this.status = "open";
+    this.connection?.send(
+      constructMessage("user-joined", {
+        from: { name: appState.name!, id: appState.id },
+        data: {},
+      })
+    );
   }
   onMessage(e: MessageEvent<string>) {
     const lines = e.data.split("\n");

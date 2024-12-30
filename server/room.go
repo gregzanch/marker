@@ -9,7 +9,7 @@ import (
 // clients.
 type Room struct {
 	// Registered clients.
-	clients map[*Client]bool
+	clients map[string]*Client
 
 	// Inbound messages from the clients.
 	broadcast chan []byte
@@ -41,13 +41,13 @@ func (room *Room) run() {
 		// registered case
 		case client := <-room.register:
 			log.Println("Registered new client")
-			room.clients[client] = true
+			room.clients[client.ID] = client
 
 		// unregistered case
 		case client := <-room.unregister:
 			log.Println("Unregistered client")
-			if _, ok := room.clients[client]; ok {
-				delete(room.clients, client)
+			if _, ok := room.clients[client.ID]; ok {
+				delete(room.clients, client.ID)
 				close(client.send)
 				if len(room.clients) == 0 {
 					room.lastEmpty = time.Now().UnixMilli();
@@ -57,12 +57,12 @@ func (room *Room) run() {
 		// on message
 		case message := <-room.broadcast:
 			log.Printf("Message received '%s'", message)
-			for client := range room.clients {
+			for _, client := range room.clients {
 				select {
 				case client.send <- message:
 				default:
 					close(client.send)
-					delete(room.clients, client)
+					delete(room.clients, client.ID)
 				}
 			}
 		}

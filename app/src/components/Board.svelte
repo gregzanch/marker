@@ -11,19 +11,21 @@
   let width = $state(window.innerWidth);
   let height = $state(window.innerHeight);
   let renderer = $state<Renderer | null>(null);
+  let dataLoaded = $state(false);
 
   onMount(() => {
+    
     const location = new URL(window.location.toString());
     const id = location.searchParams.get("id");
     if (!id) {
       appState.navigate("notFound");
       return;
     }
-    appState.messenger = new Messenger(id);
     if (!appState.name) {
       appState.navigate("join", { id });
       return;
     }
+    appState.messenger = new Messenger(id);
 
     canvas = document.getElementById("board") as HTMLCanvasElement;
     context = canvas.getContext("2d")!;
@@ -79,6 +81,25 @@
       }
       cursors.get(id)!.position.set(x, y);
     });
+
+    appState.messenger.connection?.addEventListener("open", () => {
+      fetch("/getClients", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id })
+    }).then(r => r.json()).then((data) => {
+      console.log(data);
+      for(const client of data.clients as any[]) {
+        appState.users[client.id] = client;
+        cursors.get(appState.id)!.color = client.color;
+        dataLoaded = true;
+      }
+    }).catch(console.error)
+    })
+    
+
 
     const interval = setInterval(() => {
       requestAnimationFrame(() => {

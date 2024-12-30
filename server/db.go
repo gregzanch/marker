@@ -26,7 +26,7 @@ func (appState *AppState) cleanup() {
 	for _, room := range appState.rooms {
 		if len(room.clients) == 0 {
 			if currentTime - room.lastEmpty >= cleanupPeriod.Milliseconds() {
-				log.Printf("removed room '%s' [%s]", room.name, room.id)
+				log.Printf("removed room '%s' [%s]\n", room.name, room.id)
 				room.appState.removeRoom(room.id)
 			}
 		}

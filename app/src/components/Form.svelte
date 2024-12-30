@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { appState } from "../state/appState.svelte";
   import { constructMessage } from "../state/messenger.svelte";
+  import app from "../main";
 
   type RoomFormData = {
     roomName: string;
@@ -80,7 +81,8 @@
       createNewRoom(data).catch(console.error);
     } else {
       appState.name = data.userName;
-      appState.navigate("board")
+      const id = appState.boardId!;
+      appState.navigate("board", { id })
     }
   }}
 >

@@ -6,8 +6,11 @@ import Board from "../components/Board.svelte";
 import Create from "../components/Create.svelte";
 import Join from "../components/Join.svelte";
 import NotFound from "../components/NotFound.svelte";
+import { colors } from "../lib/colors";
 
-type User = EventMap["user-joined"]["from"];
+type User = EventMap["user-joined"]["from"] & {
+  color: (typeof colors)[number];
+};
 
 class AppState {
   /** Messenger to handle communication with server */
@@ -69,9 +72,12 @@ class AppState {
   }
   navigate(
     page: keyof typeof this.routes | "",
-    queryParams: Record<string, string> = {}
+    queryParams: Record<string, string> = {},
+    override = true
   ) {
-    const url = new URL(window.location.toString());
+    const url = new URL(
+      override ? window.location.origin : window.location.toString()
+    );
     url.pathname = "/" + page;
 
     for (const param of Object.keys(queryParams)) {

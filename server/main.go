@@ -75,7 +75,7 @@ func main() {
 			id:         pid,
 			name:       d.RoomName,
 			appState:   appState,
-			clients:    make(map[*Client]bool),
+			clients:    make(map[string]*Client),
 			broadcast:  make(chan []byte),
 			register:   make(chan *Client),
 			unregister: make(chan *Client),
@@ -116,30 +116,50 @@ func main() {
 
 	}).HeadersRegexp("Content-Type", "application/json").Methods("POST", "GET")
 
+
+	router.HandleFunc("/getClients", func(w http.ResponseWriter, r *http.Request) {
+		var d struct {
+			ID string `json:"id"`
+		}
+
+		err := json.NewDecoder(r.Body).Decode(&d)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		var responseMessage struct {
+			Clients []*Client `json:"clients"`
+		}
+
+		if val, ok := appState.rooms[d.ID]; ok {
+			responseMessage.Clients = make([]*Client, len(val.clients));
+			i := 0
+			for _, client := range val.clients {
+				responseMessage.Clients[i] = client;
+				i += 1
+			}
+			json.NewEncoder(w).Encode(responseMessage)
+		} else {
+			http.NotFound(w, r)
+		}
+
+		}).HeadersRegexp("Content-Type", "application/json").Methods("POST", "GET")
+
 	// handle the websocket route before the "catch all" handler
-	router.HandleFunc("/ws/{id}", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/ws/{id}/{name}/{userId}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		room := appState.rooms[vars["id"]]
+		name := vars["name"]
+		userId := vars["userId"]
 		if room != nil {
 			go room.run()
-			serveWs(room, w, r)
+			serveWs(room, name, userId, w, r)
 		} else {
 			w.WriteHeader(404)
 			w.Write([]byte("Could not find room"))
 		}
 	})
 
-	router.HandleFunc("/has/{id}", func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		room := appState.rooms[vars["id"]]
-		if room == nil {
-			w.WriteHeader(404)
-			w.Write([]byte("Could not find id"))
-		} else {
-			w.WriteHeader(200)
-
-		}
-	})
 
 	// point the main app to the dist directory created by svelte
 	app := AppHandler{staticPath: "../app/dist", indexPath: "index.html", appState: appState}
@@ -153,7 +173,7 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	
+	appState.cleanup()
 
 	log.Fatal(srv.ListenAndServe())
 }
