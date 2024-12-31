@@ -5,6 +5,7 @@
   import { throttle } from "../lib/throttle";
   import { Renderer } from "../lib/renderer/renderer";
   import { Cursor } from "../lib/entities/cursor";
+  import ConnectedUsers from "./ConnectedUsers.svelte";
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D;
@@ -12,6 +13,8 @@
   let height = $state(window.innerHeight);
   let renderer = $state<Renderer | null>(null);
   let dataLoaded = $state(false);
+
+  console.log(appState);
 
   onMount(() => {
     
@@ -90,9 +93,10 @@
       },
       body: JSON.stringify({ id })
     }).then(r => r.json()).then((data) => {
-      console.log(data);
+
       for(const client of data.clients as any[]) {
-        appState.users[client.id] = client;
+        appState.users.push(client);
+        console.log(appState.users);
         cursors.get(appState.id)!.color = client.color;
         dataLoaded = true;
       }
@@ -112,11 +116,38 @@
       clearInterval(interval);
     };
   });
+
+  $inspect(appState.users).with(console.log)
 </script>
 
-<canvas id="board" {width} {height}></canvas>
+<div class="page-container">
+  <nav>
+    <span class="marker-logo">marker</span>
+    <ConnectedUsers />
+  </nav>
+  <canvas id="board" {width} {height}></canvas>
+</div>
 
 <style>
+  .marker-logo {
+    font-size: 36px;
+    font-family: marker;
+  }
+  .page-container {
+    width: 100vw;
+    height: 100vh;
+    align-content: center;
+  }
+  nav {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: var(--spacing-200) var(--spacing-600);
+    width: calc(100vw - var(--spacing-600) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   canvas {
     width: 100vw;
     height: 100vh;

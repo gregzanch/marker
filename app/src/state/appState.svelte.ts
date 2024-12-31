@@ -24,7 +24,7 @@ class AppState {
   /** board id */
   boardId: string | null = $state(null);
   /** Connected Users */
-  users: Record<string, User> = {};
+  users: User[] = $state([]);
   /** Our routes for the app */
   routes = {
     home: Home,
