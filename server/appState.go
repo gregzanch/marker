@@ -5,12 +5,6 @@ import (
 	"time"
 )
 
-
-type Point struct {
-	X float64 `json:"x"`;
-	Y float64 `json:"y"`;
-}
-
 var cleanupPeriod = (time.Duration(1) * time.Minute);
 
 type AppState struct {

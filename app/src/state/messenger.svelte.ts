@@ -1,19 +1,18 @@
 import { appState } from "./appState.svelte";
 
+type From = {
+  id: string;
+  name: string;
+};
+
 export interface EventMap {
   "user-joined": {
-    from: {
-      id: string;
-      name: string;
-    };
+    from: From;
     type: "user-joined";
     data: {};
   };
   "cursor-change": {
-    from: {
-      id: string;
-      name: string;
-    };
+    from: From;
     type: "cursor-change";
     data: {
       x: number;
@@ -21,12 +20,36 @@ export interface EventMap {
     };
   };
   "draw-ellipse": {
-    from: {
-      id: string;
-      name: string;
-    };
+    from: From;
     type: "draw-ellipse";
-    data: { x: number; y: number; rx: number; ry: number; color: string };
+    data: {
+      x: number;
+      y: number;
+      rx: number;
+      ry: number;
+      color: string;
+    };
+  };
+  "create-new-line": {
+    from: From;
+    type: "create-new-line";
+    data: {
+      id: string;
+      color: string;
+      vertices: Array<{
+        x: number;
+        y: number;
+      }>;
+    };
+  };
+  "add-point-to-line": {
+    from: From;
+    type: "add-point-to-line";
+    data: {
+      id: string;
+      x: number;
+      y: number;
+    };
   };
 }
 
@@ -52,6 +75,8 @@ export class Messenger {
     "cursor-change": [],
     "draw-ellipse": [],
     "user-joined": [],
+    "create-new-line": [],
+    "add-point-to-line": [],
   };
   constructor(public id: string) {
     if (!window["WebSocket"]) {
@@ -104,6 +129,13 @@ export class Messenger {
           break;
         case "draw-ellipse":
           this.onDrawEllipse(data);
+          break;
+        case "create-new-line":
+          this.onCreateNewLine(data);
+          break;
+        case "add-point-to-line":
+          this.onAddPointToLine(data);
+          break;
         default:
           break;
       }
@@ -137,6 +169,16 @@ export class Messenger {
   }
   onUserJoined(event: EventMap["user-joined"]) {
     for (const listener of this.eventListeners["user-joined"]) {
+      listener(event);
+    }
+  }
+  onCreateNewLine(event: EventMap["create-new-line"]) {
+    for (const listener of this.eventListeners["create-new-line"]) {
+      listener(event);
+    }
+  }
+  onAddPointToLine(event: EventMap["add-point-to-line"]) {
+    for (const listener of this.eventListeners["add-point-to-line"]) {
       listener(event);
     }
   }
