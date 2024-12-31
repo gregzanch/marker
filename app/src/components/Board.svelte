@@ -5,6 +5,7 @@
   import { throttle } from "../lib/throttle";
   import { Renderer } from "../lib/renderer/renderer";
   import { Cursor } from "../lib/entities/cursor";
+  import ConnectedUsers from "./ConnectedUsers.svelte";
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D;
@@ -14,7 +15,6 @@
   let dataLoaded = $state(false);
 
   onMount(() => {
-    
     const location = new URL(window.location.toString());
     const id = location.searchParams.get("id");
     if (!id) {
@@ -74,32 +74,33 @@
         data: { x, y },
         from: { name, id },
       } = data;
-      // if (id === appState.id) return;
-      if (!cursors.has(id)) {
-        cursors.set(id, new Cursor(context));
-        renderer?.addEntity(cursors.get(id)!);
-      }
-      cursors.get(id)!.position.set(x, y);
+      cursors.get(id)?.position.set(x, y);
     });
 
-    appState.messenger.connection?.addEventListener("open", () => {
+    appState.messenger.addEventListener("user-joined", (data) => {
       fetch("/getClients", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id })
-    }).then(r => r.json()).then((data) => {
-      console.log(data);
-      for(const client of data.clients as any[]) {
-        appState.users[client.id] = client;
-        cursors.get(appState.id)!.color = client.color;
-        dataLoaded = true;
-      }
-    }).catch(console.error)
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          for (const client of data.clients as any[]) {
+            if(appState.users.find(user=>user.id === client.id)){
+              continue;
+            }
+              appState.users.push(client);
+              const c = new Cursor(context);
+              c.color = client.color;
+              cursors.set(client.id, c);
+              renderer?.addEntity(c);
+          }
+          dataLoaded = true;
+        })
+        .catch(console.error);
     })
-    
-
 
     const interval = setInterval(() => {
       requestAnimationFrame(() => {
@@ -112,11 +113,37 @@
       clearInterval(interval);
     };
   });
+
 </script>
 
-<canvas id="board" {width} {height}></canvas>
+<div class="page-container">
+  <nav>
+    <span class="marker-logo">marker</span>
+    <ConnectedUsers />
+  </nav>
+  <canvas id="board" {width} {height}></canvas>
+</div>
 
 <style>
+  .marker-logo {
+    font-size: 36px;
+    font-family: marker;
+  }
+  .page-container {
+    width: 100vw;
+    height: 100vh;
+    align-content: center;
+  }
+  nav {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: var(--spacing-200) var(--spacing-600);
+    width: calc(100vw - var(--spacing-600) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   canvas {
     width: 100vw;
     height: 100vh;
