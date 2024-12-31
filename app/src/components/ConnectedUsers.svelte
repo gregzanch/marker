@@ -1,12 +1,19 @@
 <script lang="ts">
   import { appState } from "../state/appState.svelte";
-  const users = appState.users
-  $inspect(appState.users)
+  const users = appState.users;
+  $inspect(appState.users);
 </script>
 
 <div class="avatar-container">
   {#each users as u}
-    <div class="avatar" style:background-color={`var(--color-participant-${u.color})`}>{u.name[0].toUpperCase()}</div>
+    <div
+      class="avatar"
+      style:background-color={`var(--color-participant-${u.color})`}
+      style:border-color={`var(--color-participant-${u.color}-down)`}
+      title={u.name}
+    >
+      {u.name[0].toUpperCase()}
+    </div>
   {/each}
 </div>
 
@@ -22,11 +29,10 @@
     width: 2em;
     height: 2em;
     border-radius: 1em;
-
+    border-style: solid;
+    border-width: 1px;
     align-content: center;
     text-align: center;
-    background-color: red;
-    outline: 1px solid black;
   }
 
   .avatar-container :not(:last-child) {

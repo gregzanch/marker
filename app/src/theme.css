@@ -32,6 +32,14 @@
     --color-participant-blue: #609dff;
     --color-participant-purple: #8771ff;
     --color-participant-pink: #ff83ff;
+    --color-participant-red-down: color-mix(in srgb, var(--color-participant-red), black 20%);
+      --color-participant-orange-down: color-mix(in srgb, var(--color-participant-orange), black 20%);
+      --color-participant-yellow-down: color-mix(in srgb, var(--color-participant-yellow), black 20%);
+      --color-participant-green-down: color-mix(in srgb, var(--color-participant-green), black 20%);
+      --color-participant-cyan-down: color-mix(in srgb, var(--color-participant-cyan), black 20%);
+      --color-participant-blue-down: color-mix(in srgb, var(--color-participant-blue), black 20%);
+      --color-participant-purple-down: color-mix(in srgb, var(--color-participant-purple), black 20%);
+      --color-participant-pink-down: color-mix(in srgb, var(--color-participant-pink), black 20%);
   /* spacings */
   --spacing-0: 0px;
   --spacing-050: 2px;
