@@ -20,6 +20,9 @@ type DataType interface {
 type UserJoinedData struct {}
 
 type CursorChangeData Point
+type CursorVisibleData struct {
+	Visible bool `json:"visible"`
+}
 
 type DrawEllipseData struct {
 	ID string `json:"id"`

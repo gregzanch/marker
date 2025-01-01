@@ -97,6 +97,29 @@ func (room *Room) run() {
 					continue
 				}
 				// handle cursor change
+				// check if the client exists, hint: it should
+				c, ok := room.clients[obj.From.ID]
+				if !ok {
+					log.Printf("Could not find client with id '%s'", obj.From.ID)
+					continue
+				}
+				c.Visible = true
+				c.Position.X = data.X
+				c.Position.Y = data.Y
+			
+			case "cursor-left":
+				var data CursorVisibleData
+				if err := json.Unmarshal(obj.Data, &data); err != nil {
+					log.Println("Error unmarshaling cursor visible data:", err)
+					continue
+				}
+				// check if the client exists, hint: it should
+				c, ok := room.clients[obj.From.ID]
+				if !ok {
+					log.Printf("Could not find client with id '%s'", obj.From.ID)
+					continue
+				}
+				c.Visible = data.Visible
 
 			case "draw-ellipse":
 				var data DrawEllipseData

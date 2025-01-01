@@ -54,6 +54,10 @@ type Client struct {
 	Color string `json:"color,omitempty"`
 	// users id
 	ID string `json:"id"`
+	// position of cursor
+	Position Point `json:"position"`
+	// is the client on the page
+	Visible bool `json:"visible"`
 }
 
 
