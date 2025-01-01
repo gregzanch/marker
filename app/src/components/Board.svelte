@@ -6,6 +6,7 @@
   import { Renderer } from "../lib/renderer/renderer";
   import { Cursor } from "../lib/entities/cursor";
   import ConnectedUsers from "./ConnectedUsers.svelte";
+  import { Line } from "../lib/entities/line";
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D;
@@ -15,92 +16,37 @@
   let dataLoaded = $state(false);
 
   onMount(() => {
+
+    // get board id 
     const location = new URL(window.location.toString());
     const id = location.searchParams.get("id");
     if (!id) {
-      appState.navigate("notFound");
+      appState.fatalError("Could not parse room id from url.")
       return;
     }
+    appState.boardId = id;
+
+    // Redirect to join if no nane
     if (!appState.name) {
       appState.navigate("join", { id });
       return;
     }
+
+    // initialize messenger
     appState.messenger = new Messenger(id);
 
+    // get canvas context and init renderer
     canvas = document.getElementById("board") as HTMLCanvasElement;
     context = canvas.getContext("2d")!;
     if (!context) {
-      appState.globalErrorMessage = "Failed to get canvas context.";
-    }
-    renderer = new Renderer(context);
-
-    const cursors = new Map<string, Cursor>([
-      [appState.id, new Cursor(context)],
-    ]);
-    Object.assign(window, { renderer, cursors });
-    renderer.addEntity(cursors.get(appState.id)!);
-
-    const throttledCursorChange = throttle(
-      (name: string, id: string, x: number, y: number) => {
-        appState.messenger?.connection?.send(
-          constructMessage("cursor-change", {
-            from: {
-              name,
-              id,
-            },
-            data: {
-              x,
-              y,
-            },
-          })
-        );
-      },
-      50
-    );
-
-    function mousemove(event: MouseEvent) {
-      const bounds = canvas.getBoundingClientRect();
-      const x = (event.clientX - bounds.top) * window.devicePixelRatio;
-      const y = (event.clientY - bounds.left) * window.devicePixelRatio;
-      // set the position of our own cursor.
-      cursors.get(appState.id)?.position.set(x, y);
-      // send a message to everyone that our own cursor moved
-      throttledCursorChange(appState.name!, appState.id, x, y);
+      appState.fatalError("Failed to get canvas context.")
+      return;
     }
 
-    canvas.addEventListener("mousemove", mousemove);
-    appState.messenger?.addEventListener("cursor-change", (data) => {
-      const {
-        data: { x, y },
-        from: { name, id },
-      } = data;
-      cursors.get(id)?.position.set(x, y);
-    });
+    // once renderer has the context, we can really do all the logic there
+    renderer = new Renderer(context, appState);
 
-    appState.messenger.addEventListener("user-joined", (data) => {
-      fetch("/getClients", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      })
-        .then((r) => r.json())
-        .then((data) => {
-          for (const client of data.clients as any[]) {
-            if(appState.users.find(user=>user.id === client.id)){
-              continue;
-            }
-              appState.users.push(client);
-              const c = new Cursor(context);
-              c.color = client.color;
-              cursors.set(client.id, c);
-              renderer?.addEntity(c);
-          }
-          dataLoaded = true;
-        })
-        .catch(console.error);
-    })
+    renderer.setupEventHandlers();
 
     const interval = setInterval(() => {
       requestAnimationFrame(() => {
@@ -109,11 +55,11 @@
     }, 1000 / 60);
 
     return () => {
-      canvas.removeEventListener("mousemove", mousemove);
+      renderer?.removeEventHandlers();
+      
       clearInterval(interval);
     };
   });
-
 </script>
 
 <div class="page-container">

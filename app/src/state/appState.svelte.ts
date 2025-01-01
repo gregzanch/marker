@@ -5,14 +5,14 @@ import Home from "../components/Home.svelte";
 import Board from "../components/Board.svelte";
 import Create from "../components/Create.svelte";
 import Join from "../components/Join.svelte";
-import NotFound from "../components/NotFound.svelte";
+import ErrorPage from "../components/ErrorPage.svelte";
 import { colors } from "../lib/colors";
 
 type User = EventMap["user-joined"]["from"] & {
   color: (typeof colors)[number];
 };
 
-class AppState {
+export class AppState {
   /** Messenger to handle communication with server */
   messenger: Messenger | null = $state(null);
   /** Error message that is at the root level of the application */
@@ -31,7 +31,7 @@ class AppState {
     board: Board,
     create: Create,
     join: Join,
-    notFound: NotFound,
+    error: ErrorPage,
   };
   /** the current page */
   currentPage: keyof typeof this.routes | "" = $state("");
@@ -66,7 +66,7 @@ class AppState {
         }
         break;
       default:
-        this.currentPage = "notFound";
+        this.currentPage = "error";
         break;
     }
   }
@@ -85,6 +85,10 @@ class AppState {
     }
     history.pushState(undefined, "", url);
     this.currentPage = page;
+  }
+  fatalError(message: string) {
+    this.globalErrorMessage = message;
+    this.navigate("error");
   }
 }
 
