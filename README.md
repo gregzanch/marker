@@ -1,4 +1,6 @@
-# Marker
+<h1 align="center">
+  <img alt="Marker Logo" src="app/public/full-logo.svg">
+</h1>
 
 Marker is a simple sharable white board application using websockets written in Go. The frontend is written in Svelte.
 
