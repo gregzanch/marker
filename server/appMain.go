@@ -29,6 +29,10 @@ func main() {
 		HeadersRegexp("Content-Type", "application/json").
 		Methods("POST", "GET")
 
+	router.HandleFunc("/getCurrentBoardState", GetCurrentBoardState(appState)).
+		HeadersRegexp("Content-Type", "application/json").
+		Methods("POST", "GET")
+
 	router.HandleFunc("/ws/{id}/{name}/{userId}", HandleWebSocket(appState))
 
 	// point the main app to the dist directory created by svelte

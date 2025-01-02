@@ -105,6 +105,43 @@ func GetClients(appState *AppState) func(w http.ResponseWriter, r *http.Request)
 	}
 }
 
+// Gets the current state of the board
+func GetCurrentBoardState(appState *AppState) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var d struct {
+			ID string `json:"id"`
+		}
+
+		err := json.NewDecoder(r.Body).Decode(&d)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		var responseMessage struct {
+			Clients []*Client `json:"clients"`
+			Lines []*Line `json:"lines"`
+		}
+
+		room, ok := appState.rooms[d.ID]
+		if !ok {
+			http.NotFound(w, r)
+		}
+		responseMessage.Clients = make([]*Client, len(room.clients))
+		i := 0
+		for _, client := range room.clients {
+			responseMessage.Clients[i] = client
+			i += 1
+		}
+		responseMessage.Lines = make([]*Line, len(room.lines))
+		i=0
+		for _, line := range room.lines {
+			responseMessage.Lines[i] = line
+			i += 1
+		}
+		json.NewEncoder(w).Encode(responseMessage)
+	}
+}
+
 // Handle incoming web socket requests
 func HandleWebSocket(appState *AppState) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {

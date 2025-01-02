@@ -37,6 +37,8 @@ export class Cursor extends Entity {
   draw() {
     if (!this.visible) return;
     this.context.strokeStyle = this.color;
+    this.context.save();
+    this.context.lineWidth = 3;
     this.context.beginPath();
     this.context.moveTo(this.position.x, this.position.y);
     this.context.lineTo(this.position.x, this.position.y + this.size);
@@ -56,5 +58,6 @@ export class Cursor extends Entity {
     this.context.moveTo(this.position.x, this.position.y);
     this.context.lineTo(this.position.x - this.size, this.position.y);
     this.context.stroke();
+    this.context.restore();
   }
 }

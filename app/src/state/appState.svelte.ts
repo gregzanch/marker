@@ -5,14 +5,19 @@ import Home from "../components/Home.svelte";
 import Board from "../components/Board.svelte";
 import Create from "../components/Create.svelte";
 import Join from "../components/Join.svelte";
-import NotFound from "../components/NotFound.svelte";
+import ErrorPage from "../components/ErrorPage.svelte";
 import { colors } from "../lib/colors";
 
-type User = EventMap["user-joined"]["from"] & {
+export type Client = EventMap["user-joined"]["from"] & {
   color: (typeof colors)[number];
+  position: {
+    x: number;
+    y: number;
+  };
+  visible: boolean;
 };
 
-class AppState {
+export class AppState {
   /** Messenger to handle communication with server */
   messenger: Messenger | null = $state(null);
   /** Error message that is at the root level of the application */
@@ -24,14 +29,14 @@ class AppState {
   /** board id */
   boardId: string | null = $state(null);
   /** Connected Users */
-  users: User[] = $state([]);
+  users: Client[] = $state([]);
   /** Our routes for the app */
   routes = {
     home: Home,
     board: Board,
     create: Create,
     join: Join,
-    notFound: NotFound,
+    error: ErrorPage,
   };
   /** the current page */
   currentPage: keyof typeof this.routes | "" = $state("");
@@ -66,7 +71,7 @@ class AppState {
         }
         break;
       default:
-        this.currentPage = "notFound";
+        this.currentPage = "error";
         break;
     }
   }
@@ -85,6 +90,10 @@ class AppState {
     }
     history.pushState(undefined, "", url);
     this.currentPage = page;
+  }
+  fatalError(message: string) {
+    this.globalErrorMessage = message;
+    this.navigate("error");
   }
 }
 

@@ -14,12 +14,15 @@ type Message struct {
 }
 
 type DataType interface {
-	UserJoinedData | CursorChangeData | DrawEllipseData | CreateNewLineData | AddPointToLineData
+	UserJoinedData | CursorChangeData | DrawEllipseData | CreateNewLineData | AddPointsToLineData
 }
 
 type UserJoinedData struct {}
 
 type CursorChangeData Point
+type CursorVisibleData struct {
+	Visible bool `json:"visible"`
+}
 
 type DrawEllipseData struct {
 	ID string `json:"id"`
@@ -36,8 +39,7 @@ type CreateNewLineData struct {
 	Vertices []Point `json:"vertices"`
 }
 
-type AddPointToLineData struct {
+type AddPointsToLineData struct {
 	ID string `json:"id"`
-	X float64 `json:"x"`
-	Y float64 `json:"y"`
+	Vertices []Point `json:"vertices"`
 }
