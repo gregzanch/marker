@@ -38,11 +38,11 @@ In another terminal window I run `make build` whenever I make changes to the ser
 ## Roadmap
 
 - [x] Implement basic app in svelte
-- [ ] Implement drawing
-  - [ ] Create drawing board
-  - [ ] Create the data structure for sending/receiving
-  - [ ] implement using websockets
-- [ ] Preserve drawings option (maybe use redis for in memory storage)
+- [x] Implement drawing
+  - [x] Create drawing board
+  - [x] Create the data structure for sending/receiving
+  - [x] implement using websockets
+- [x] Preserve drawings option (maybe use redis for in memory storage)
 - [x] Add "rooms" feature
   - [x] Backend handling of rooms with IDs 
   - [x] Frontend for creating rooms
