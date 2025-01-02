@@ -28,6 +28,8 @@ export class AppState {
   id: string = nanoid();
   /** board id */
   boardId: string | null = $state(null);
+  /** name of the board */
+  boardName: string | null = $state(null);
   /** Connected Users */
   users: Client[] = $state([]);
   /** Our routes for the app */

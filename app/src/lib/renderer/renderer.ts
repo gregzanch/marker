@@ -184,6 +184,15 @@ export class Renderer {
       line.vertices.push(...event.data.vertices);
     });
 
+    this.appState.messenger?.addEventListener("user-left", (data) => {
+      const userThatLeft = data.from;
+      const index = this.appState.users.findIndex(
+        (user) => user.id === userThatLeft.id
+      );
+      if (index === -1) return;
+      this.appState.users.splice(index, 1);
+    });
+
     // define received user joined handler
     this.appState.messenger?.addEventListener("user-joined", async (data) => {
       if (!this.appState.boardId) {
