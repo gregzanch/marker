@@ -64,16 +64,29 @@
 
 <div class="page-container">
   <nav>
-    <span class="marker-logo">marker</span>
+    <div class="logo-container">
+      <span class="marker-logo">marker</span>
+      <p>{appState.boardName}</p>
+    </div>
     <ConnectedUsers />
   </nav>
   <canvas id="board" {width} {height}></canvas>
 </div>
 
 <style>
+  .logo-container > p {
+    margin: 0;
+    line-height: 1em;
+  }
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-200);
+  }
   .marker-logo {
     font-size: 36px;
     font-family: marker;
+    line-height: 1em;
   }
   .page-container {
     width: 100vw;
@@ -87,7 +100,6 @@
     padding: var(--spacing-200) var(--spacing-600);
     width: calc(100vw - var(--spacing-600) * 2);
     display: flex;
-    align-items: center;
     justify-content: space-between;
   }
   canvas {
