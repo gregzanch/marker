@@ -154,6 +154,8 @@ func serveWs(room *Room, name string, userId string, w http.ResponseWriter, r *h
 		Color: GetRandomColor(),
 		JoinedAt: time.Now(),
 		ID: userId,
+		Position: Point{X: 0, Y:0},
+		Visible: true,
 	}
 	// Register this client, triggering the select case in Room->run()
 	client.room.register <- client

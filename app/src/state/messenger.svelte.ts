@@ -1,6 +1,6 @@
 import { appState } from "./appState.svelte";
 
-type From = {
+export type From = {
   id: string;
   name: string;
 };
@@ -42,13 +42,15 @@ export interface EventMap {
       }>;
     };
   };
-  "add-point-to-line": {
+  "add-points-to-line": {
     from: From;
-    type: "add-point-to-line";
+    type: "add-points-to-line";
     data: {
       id: string;
-      x: number;
-      y: number;
+      vertices: Array<{
+        x: number;
+        y: number;
+      }>;
     };
   };
 }
@@ -76,7 +78,7 @@ export class Messenger {
     "draw-ellipse": [],
     "user-joined": [],
     "create-new-line": [],
-    "add-point-to-line": [],
+    "add-points-to-line": [],
   };
   constructor(public id: string) {
     if (!window["WebSocket"]) {
@@ -133,7 +135,7 @@ export class Messenger {
         case "create-new-line":
           this.onCreateNewLine(data);
           break;
-        case "add-point-to-line":
+        case "add-points-to-line":
           this.onAddPointToLine(data);
           break;
         default:
@@ -177,8 +179,8 @@ export class Messenger {
       listener(event);
     }
   }
-  onAddPointToLine(event: EventMap["add-point-to-line"]) {
-    for (const listener of this.eventListeners["add-point-to-line"]) {
+  onAddPointToLine(event: EventMap["add-points-to-line"]) {
+    for (const listener of this.eventListeners["add-points-to-line"]) {
       listener(event);
     }
   }

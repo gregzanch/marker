@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 )
@@ -44,12 +43,12 @@ func (room *Room) createNewLine(data CreateNewLineData, from From) {
 	}
 }
 
-func (room *Room) addPointToLine(data AddPointToLineData) {
-	line, ok := room.lines[data.ID]
+func (room *Room) addPointsToLine(data AddPointsToLineData) {
+	_, ok := room.lines[data.ID]
 	if !ok {
 		log.Printf("Could not find line with id '%s'", data.ID)
 	}
-	line.Vertices = append(line.Vertices, Point{ X: data.X, Y: data.Y })
+	room.lines[data.ID].Vertices = append(room.lines[data.ID].Vertices, data.Vertices...)
 }
 
 func (room *Room) run() {
@@ -137,20 +136,19 @@ func (room *Room) run() {
 				}
 				room.createNewLine(data, obj.From)
 
-			case "add-point-to-line":
-				var data AddPointToLineData
+			case "add-points-to-line":
+				var data AddPointsToLineData
 				if err := json.Unmarshal(obj.Data, &data); err != nil {
 					log.Println("Error unmarshaling add point to line:", err)
 					continue
 				}
-				room.addPointToLine(data)
+				room.addPointsToLine(data)
 
 
 			default:
 				log.Println("Unknown message type:", obj.Type)
 			}
 
-			fmt.Println(obj)
 			for _, client := range room.clients {
 				select {
 				case client.send <- message:

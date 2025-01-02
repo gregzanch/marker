@@ -39,6 +39,7 @@ export class Line extends Entity {
     if (!this.visible) return;
     if (this.vertices.length === 0) return;
     this.context.save();
+    this.context.lineCap = "round";
     this.context.strokeStyle = this.color;
     this.context.lineWidth = this.width;
     this.context.beginPath();

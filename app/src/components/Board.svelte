@@ -42,10 +42,10 @@
       appState.fatalError("Failed to get canvas context.")
       return;
     }
-
+    
     // once renderer has the context, we can really do all the logic there
     renderer = new Renderer(context, appState);
-
+    Object.assign(window, {renderer, appState})
     renderer.setupEventHandlers();
 
     const interval = setInterval(() => {

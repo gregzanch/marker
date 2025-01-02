@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { vec2, type Vec2 } from "../math/vec2";
 
 export type EntityOptions = {
@@ -19,6 +20,7 @@ export class Entity {
   public children: Entity[] = [];
   public context: CanvasRenderingContext2D;
   public position: Vec2;
+  public id: string;
   constructor(
     context: CanvasRenderingContext2D,
     options: Partial<EntityOptions> = {}
@@ -31,6 +33,7 @@ export class Entity {
     this.visible = visible;
     this.position = position;
     this.context = context;
+    this.id = nanoid();
   }
   draw() {
     if (!this.visible) return;

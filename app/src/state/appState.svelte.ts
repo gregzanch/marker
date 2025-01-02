@@ -8,8 +8,13 @@ import Join from "../components/Join.svelte";
 import ErrorPage from "../components/ErrorPage.svelte";
 import { colors } from "../lib/colors";
 
-type User = EventMap["user-joined"]["from"] & {
+export type Client = EventMap["user-joined"]["from"] & {
   color: (typeof colors)[number];
+  position: {
+    x: number;
+    y: number;
+  };
+  visible: boolean;
 };
 
 export class AppState {
@@ -24,7 +29,7 @@ export class AppState {
   /** board id */
   boardId: string | null = $state(null);
   /** Connected Users */
-  users: User[] = $state([]);
+  users: Client[] = $state([]);
   /** Our routes for the app */
   routes = {
     home: Home,
