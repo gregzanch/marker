@@ -65,6 +65,19 @@ func (room *Room) run() {
 		case client := <-room.unregister:
 			log.Println("Unregistered client")
 			if _, ok := room.clients[client.ID]; ok {
+				var leaveMessage struct {
+					From struct {
+						Name string `json:"name"`
+						ID string `json:"id"`
+					} `json:"from"`
+					Type string `json:"type"`
+					Data struct {} `json:"data"`
+				}
+				leaveMessage.From.Name = client.UserName
+				leaveMessage.From.ID = client.ID
+				leaveMessage.Type = "user-left"
+				msg, _ := json.Marshal(leaveMessage)
+				room.broadcast <- msg
 				delete(room.clients, client.ID)
 				close(client.send)
 				if len(room.clients) == 0 {
@@ -88,6 +101,14 @@ func (room *Room) run() {
 					continue
 				}
 				// handle user joined
+
+			case "user-left":
+				var data UserJoinedData
+				if err := json.Unmarshal(obj.Data, &data); err != nil {
+					log.Println("Error unmarshaling user left data:", err)
+					continue
+				}
+				// handle user left
 
 			case "cursor-change":
 				var data CursorChangeData

@@ -11,6 +11,11 @@ export interface EventMap {
     type: "user-joined";
     data: {};
   };
+  "user-left": {
+    from: From;
+    type: "user-left";
+    data: {};
+  };
   "cursor-change": {
     from: From;
     type: "cursor-change";
@@ -79,6 +84,7 @@ export class Messenger {
     "user-joined": [],
     "create-new-line": [],
     "add-points-to-line": [],
+    "user-left": [],
   };
   constructor(public id: string) {
     if (!window["WebSocket"]) {
@@ -126,6 +132,9 @@ export class Messenger {
         case "user-joined":
           this.onUserJoined(data);
           break;
+        case "user-left":
+          this.onUserLeft(data);
+          break;
         case "cursor-change":
           this.onCursorChange(data);
           break;
@@ -171,6 +180,11 @@ export class Messenger {
   }
   onUserJoined(event: EventMap["user-joined"]) {
     for (const listener of this.eventListeners["user-joined"]) {
+      listener(event);
+    }
+  }
+  onUserLeft(event: EventMap["user-left"]) {
+    for (const listener of this.eventListeners["user-left"]) {
       listener(event);
     }
   }
