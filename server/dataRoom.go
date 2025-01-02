@@ -47,6 +47,7 @@ func (room *Room) addPointsToLine(data AddPointsToLineData) {
 	_, ok := room.lines[data.ID]
 	if !ok {
 		log.Printf("Could not find line with id '%s'", data.ID)
+		return
 	}
 	room.lines[data.ID].Vertices = append(room.lines[data.ID].Vertices, data.Vertices...)
 }
