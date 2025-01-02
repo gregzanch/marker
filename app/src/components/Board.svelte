@@ -60,6 +60,10 @@
       clearInterval(interval);
     };
   });
+
+  function copyLink(){
+    navigator.clipboard.writeText(window.location.toString());
+  }
 </script>
 
 <div class="page-container">
@@ -68,12 +72,26 @@
       <span class="marker-logo">marker</span>
       <p>{appState.boardName}</p>
     </div>
-    <ConnectedUsers />
+    <div class="right-container">
+      <ConnectedUsers />
+      <button id="share-button" onclick={copyLink}>Share</button>
+    </div>
   </nav>
   <canvas id="board" {width} {height}></canvas>
 </div>
 
 <style>
+  .right-container {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-300);
+    align-items: center;
+    margin-top: 0.5em;
+    height: min-content;
+  }
+  .right-container > #share-button {
+    height: min-content;
+  }
   .logo-container > p {
     margin: 0;
     line-height: 1em;

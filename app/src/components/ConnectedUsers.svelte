@@ -21,7 +21,6 @@
   .avatar-container {
     display: flex;
     flex-direction: row;
-    margin-top: 0.5rem;
   }
   .avatar-container:hover {
     --gap-amount: 0.5em;
