@@ -28,6 +28,7 @@
     });
     const json = await res.json();
     appState.name = data.userName;
+    appState.boardName = data.roomName;
     appState.messenger?.connection?.send(constructMessage("user-joined", {
       from: {
         name: json.userName,
@@ -63,7 +64,10 @@
         return;
       }
 
-      getRoomName(id).then(name => roomNameElement.setAttribute("value", name)).catch(() => {
+      getRoomName(id).then(name => {
+        roomNameElement.setAttribute("value", name)
+        appState.boardName = name;
+      }).catch(() => {
         alert("Room does not exist!")
         appState.navigate("");
       });
