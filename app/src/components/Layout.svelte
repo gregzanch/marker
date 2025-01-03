@@ -2,8 +2,8 @@
   <nav>
     <span class="marker-logo">marker</span>
   </nav>
-  <div class="vertical">
-    <slot></slot>
+  <div class="center">
+      <slot></slot>
   </div>
 </div>
 
@@ -17,13 +17,11 @@
     height: 100vh;
     align-content: center;
   }
-  .vertical {
+  .center {
     display: flex;
-    flex-direction: column;
-    justify-content: end;
-    align-items: center;
-    gap: var(--spacing-600);
+    justify-content: center;
   }
+
   nav {
     position: absolute;
     top: 0px;
