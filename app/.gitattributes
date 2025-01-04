@@ -1,0 +1,5 @@
+# Images
+*.svg  text
+
+# Font Files
+*.woff binary
