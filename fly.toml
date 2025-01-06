@@ -1,9 +1,4 @@
-# fly.toml app configuration file generated for marker-delicate-water-3160 on 2025-01-05T21:38:45-05:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
-app = 'marker'
+app = 'marker-app'
 primary_region = 'bos'
 
 [build]
