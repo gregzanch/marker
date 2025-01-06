@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for marker-delicate-water-3160 on 2025-01-05T21:38:45-05:00
+# fly.toml app configuration file generated for marker-obbmhw on 2025-01-06T03:07:07Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'marker'
+app = 'marker-obbmhw'
 primary_region = 'bos'
 
 [build]
@@ -20,3 +20,4 @@ primary_region = 'bos'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 1024
