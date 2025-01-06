@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -42,9 +43,12 @@ func main() {
 	// create the server itself
 	srv := &http.Server{
 		Handler:      router,
-		// Addr:         "127.0.0.1:8080",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
+	}
+
+	if os.Getenv("DEV") != "" {
+		srv.Addr = "127.0.0.1:8080"
 	}
 
 	appState.cleanup()
