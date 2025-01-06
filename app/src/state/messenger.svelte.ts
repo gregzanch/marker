@@ -94,11 +94,17 @@ export class Messenger {
   }
 
   async initiateConnection() {
+    let scheme = "ws";
+    var location = document.location;
+
+    if (location.protocol === "https:") {
+      scheme += "s";
+    }
     try {
       this.connection = new WebSocket(
-        `ws://${document.location.host}/ws/${this.id}/${appState.name!}/${
-          appState.id
-        }`
+        `${scheme}://${document.location.host}/ws/${
+          this.id
+        }/${appState.name!}/${appState.id}`
       );
       this.connection.addEventListener("open", this.open.bind(this));
       this.connection.addEventListener("close", this.close.bind(this));
