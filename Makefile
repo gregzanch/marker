@@ -1,7 +1,7 @@
 BINARY_NAME=marker
 
 build-app:
-	cd app && yarn build
+	cd app && yarn && yarn build
 
 build:
 	make build-app
