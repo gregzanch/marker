@@ -12,7 +12,9 @@
   --color-mono-green: #5fa300;
   --color-mono-red: #eb5e27;
   /*  color theme tuned down for contrast*/
-  --color-primary-down: #1791CF;
+  --color-primary-down: hsl(200, 80%, 45%);
+    --color-primary-down-2: hsl(200, 80%, 40%);
+    --color-primary-down-3: hsl(200, 80%, 35%);
   --color-mono-lightest-down: #ebe6e0;
   --color-mono-lighter-down: #ddd8d0;
   --color-mono-light-down: #b8ae9e;
@@ -81,6 +83,12 @@ body[theme="light"] {
   --mono-dark: var(--color-mono-dark);
   --mono-darker: var(--color-mono-darker);
   --mono-darkest: var(--color-mono-darkest);
+  --mono-lightest-down: var(--color-mono-lightest-down);
+    --mono-lighter-down: var(--color-mono-lighter-down);
+    --mono-light-down: var(--color-mono-light-down);
+    --mono-dark-down: var(--color-mono-dark-down);
+    --mono-darker-down: var(--color-mono-darker-down);
+    --mono-darkest-down: var(--color-mono-darkest-down);
 }
 
 body[theme="dark"] {
@@ -90,6 +98,12 @@ body[theme="dark"] {
   --mono-dark: var(--color-mono-light);
   --mono-darker: var(--color-mono-lighter);
   --mono-darkest: var(--color-mono-lightest);
+  --mono-lightest-down: var(--color-mono-darkest-down);
+    --mono-lighter-down: var(--color-mono-darker-down);
+    --mono-light-down: var(--color-mono-dark-down);
+    --mono-dark-down: var(--color-mono-light-down);
+    --mono-darker-down: var(--color-mono-lighter-down);
+    --mono-darkest-down: var(--color-mono-lightest-down);
 }
 input[type="text"],
 input[type="number"] {
@@ -113,4 +127,12 @@ button.primary {
   border-color: var(--color-primary-down);
   color: var(--color-mono-lighter);
   font-weight: var(--font-size-smaller);
+}
+button.primary:active {
+  background-color: var(--color-primary-down-2);
+}
+
+*:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
