@@ -1,6 +1,6 @@
 :root {
   /*  normal color theme */
-  --color-primary: #30ABE8;
+  --color-primary: #30abe8;
   --color-mono-lightest: #fbfaf9;
   --color-mono-lighter: #f2f0ed;
   --color-mono-light: #ccc5b9;
@@ -13,7 +13,7 @@
   --color-mono-red: #eb5e27;
   /*  color theme tuned down for contrast*/
   --color-primary-down: hsl(200, 80%, 45%);
-    --color-primary-down-2: hsl(200, 80%, 40%);
+  --color-primary-down-2: hsl(200, 80%, 40%);
     --color-primary-down-3: hsl(200, 80%, 35%);
   --color-mono-lightest-down: #ebe6e0;
   --color-mono-lighter-down: #ddd8d0;
@@ -26,7 +26,7 @@
   --color-mono-green-down: #4d8500;
   --color-mono-red-down: #d74b14;
   /* participant colors */
-    --color-participant-red: #ff6d6d;
+  --color-participant-red: #ff6d6d;
     --color-participant-orange: #ffb964;
     --color-participant-yellow: #faff76;
     --color-participant-green: #90ff7a;
@@ -34,14 +34,30 @@
     --color-participant-blue: #609dff;
     --color-participant-purple: #8771ff;
     --color-participant-pink: #ff83ff;
-    --color-participant-red-down: color-mix(in srgb, var(--color-participant-red), black 20%);
-      --color-participant-orange-down: color-mix(in srgb, var(--color-participant-orange), black 20%);
-      --color-participant-yellow-down: color-mix(in srgb, var(--color-participant-yellow), black 20%);
-      --color-participant-green-down: color-mix(in srgb, var(--color-participant-green), black 20%);
-      --color-participant-cyan-down: color-mix(in srgb, var(--color-participant-cyan), black 20%);
-      --color-participant-blue-down: color-mix(in srgb, var(--color-participant-blue), black 20%);
-      --color-participant-purple-down: color-mix(in srgb, var(--color-participant-purple), black 20%);
-      --color-participant-pink-down: color-mix(in srgb, var(--color-participant-pink), black 20%);
+  --color-participant-red-down: color-mix(in srgb,
+        var(--color-participant-red),
+        black 20%);
+    --color-participant-orange-down: color-mix(in srgb,
+        var(--color-participant-orange),
+        black 20%);
+    --color-participant-yellow-down: color-mix(in srgb,
+        var(--color-participant-yellow),
+        black 20%);
+    --color-participant-green-down: color-mix(in srgb,
+        var(--color-participant-green),
+        black 20%);
+    --color-participant-cyan-down: color-mix(in srgb,
+        var(--color-participant-cyan),
+        black 20%);
+    --color-participant-blue-down: color-mix(in srgb,
+        var(--color-participant-blue),
+        black 20%);
+    --color-participant-purple-down: color-mix(in srgb,
+        var(--color-participant-purple),
+        black 20%);
+    --color-participant-pink-down: color-mix(in srgb,
+        var(--color-participant-pink),
+        black 20%);
   /* spacings */
   --spacing-0: 0px;
   --spacing-050: 2px;
@@ -64,7 +80,7 @@
   --font-size-larger: 32px;
   --font-size-largest: 48px;
   /* weights */
-    --font-weight-light: 150;
+  --font-weight-light: 150;
     --font-weight-medium: 400;
     --font-weight-bold: 800;
     /* radius */
@@ -73,7 +89,6 @@
     --input-padding-horizontal: 12px;
     --input-padding-vertical: 8px;
 }
-
 
 body,
 body[theme="light"] {
@@ -84,7 +99,7 @@ body[theme="light"] {
   --mono-darker: var(--color-mono-darker);
   --mono-darkest: var(--color-mono-darkest);
   --mono-lightest-down: var(--color-mono-lightest-down);
-    --mono-lighter-down: var(--color-mono-lighter-down);
+  --mono-lighter-down: var(--color-mono-lighter-down);
     --mono-light-down: var(--color-mono-light-down);
     --mono-dark-down: var(--color-mono-dark-down);
     --mono-darker-down: var(--color-mono-darker-down);
@@ -99,12 +114,13 @@ body[theme="dark"] {
   --mono-darker: var(--color-mono-lighter);
   --mono-darkest: var(--color-mono-lightest);
   --mono-lightest-down: var(--color-mono-darkest-down);
-    --mono-lighter-down: var(--color-mono-darker-down);
+  --mono-lighter-down: var(--color-mono-darker-down);
     --mono-light-down: var(--color-mono-dark-down);
     --mono-dark-down: var(--color-mono-light-down);
     --mono-darker-down: var(--color-mono-lighter-down);
     --mono-darkest-down: var(--color-mono-lightest-down);
 }
+
 input[type="text"],
 input[type="number"] {
   border-radius: var(--input-radius);
@@ -120,16 +136,38 @@ button {
   background-color: var(--mono-lighter);
   color: var(--mono-darker);
   padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+  transition: background-color 0.3s ease;
 }
 
+button:hover,
+button:focus {
+  background-color: var(--mono-lighter-down);
+}
 button.primary {
   background-color: var(--color-primary-down);
   border-color: var(--color-primary-down);
   color: var(--color-mono-lighter);
   font-weight: var(--font-size-smaller);
 }
-button.primary:active {
+button.primary:hover,
+button.primary:focus {
   background-color: var(--color-primary-down-2);
+}
+
+button.primary:active {
+  background-color: var(--color-primary-down-3);
+}
+
+button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+button:disabled {
+  pointer-events: none;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
 }
 
 *:focus {
