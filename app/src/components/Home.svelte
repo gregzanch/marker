@@ -7,7 +7,7 @@
 <Layout>
   <div class="vertical">
   <Logo animate={true} />
-  <a href="/create"><button class="primary">Create Room</button></a>
+  <a href="/create" class="button primary" role="button" tabindex="0">Create Room</a>
 </div>
 </Layout>
 
@@ -16,15 +16,13 @@
       width: 100%;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
-    }
-    button {
-      width: 100%;
       border-top-left-radius: 0px;
       border-top-right-radius: 0px;
       border-width: 1px;
       border-top-width: 0px;
-      border-color: var(--mono-darkest);
+      border-color: var(--mono-darkest) !important;
     }
+    
     .vertical {
     display: flex;
     flex-direction: column;

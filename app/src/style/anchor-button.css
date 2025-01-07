@@ -1,0 +1,49 @@
+a.button {
+  display: inline-block;
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+  font-size: var(--font-size-small);
+  text-align: center;
+  text-decoration: none;
+  color: var(--mono-darker);
+  box-sizing: border-box;
+  background-color: var(--mono-lighter);
+  border: solid 1px var(--mono-darker);
+  border-radius: var(--input-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+a.button:hover,
+a.button:focus {
+  background-color: var(--mono-lighter-down);
+}
+
+a.button.primary {
+  background-color: var(--color-primary-down);
+  border-color: var(--color-primary-down);
+  color: var(--color-mono-lighter);
+  font-weight: var(--font-size-smaller);
+}
+
+a.button.primary:hover,
+a.button.primary:focus {
+  background-color: var(--color-primary-down-2);
+}
+
+a.button.primary:active {
+  background-color: var(--color-primary-down-3);
+}
+
+a.button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+
+a.button:disabled {
+  pointer-events: none;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}

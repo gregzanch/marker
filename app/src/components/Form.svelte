@@ -100,7 +100,7 @@
     <input type="text" id="user-name" name="userName" />
   </div>
   <div class="actions">
-    <a href="/"><button type="button">Cancel</button></a>
+    <a href="/" role="button" tabindex="0" class="button">Cancel</a>
     <button type="submit" class="primary">{type==="create"?"Create Room":"Join Room"}</button>
   </div>
 </form>
