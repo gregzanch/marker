@@ -2,6 +2,8 @@
   <img alt="Marker Logo" src="app/public/full-logo.svg">
 </h1>
 
+<img id="version" src="https://img.shields.io/badge/version-1.1.0-blue" alt="version 1.1.0" />
+
 Marker is a simple sharable white board application using websockets written in Go. The frontend is written in Svelte.
 
 ## Developing
@@ -53,5 +55,16 @@ In another terminal window I run `make build` whenever I make changes to the ser
 
 Follow the [design](https://www.figma.com/design/HUzjefdAllJMLkFTIRFzzC/Marker) on Figma
 
-## Notes
+## Contributing
+
+Here are some basic contibuting rules
+
+### Upgrading Version
+
+When upgrading a version run the following make commands:
+- For a major upgrade, run `make major`
+- For a minor upgrade, run `make minor`
+- For a patch upgrade, run `make patch`
+- For a specific version, run `make version v=<version>`
+
 
