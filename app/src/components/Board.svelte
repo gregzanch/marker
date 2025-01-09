@@ -7,6 +7,7 @@
   import { Cursor } from "../lib/entities/cursor";
   import ConnectedUsers from "./ConnectedUsers.svelte";
   import { Line } from "../lib/entities/line";
+  import { notify } from "./notify.svelte";
 
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D;
@@ -56,13 +57,13 @@
 
     return () => {
       renderer?.removeEventHandlers();
-      
       clearInterval(interval);
     };
   });
 
   function copyLink(){
     navigator.clipboard.writeText(window.location.toString());
+    notify("Copied link to clip to clipboard", 2)
   }
 </script>
 
