@@ -1,6 +1,11 @@
 <script lang="ts">
-  import Router from "./components/Router.svelte"
+  import NotificationContainer from "./components/NotificationContainer.svelte";
+import Router from "./components/Router.svelte"
 
 </script>
 
-<Router />
+<div>
+  <Router />
+  <NotificationContainer />
+</div>
+
