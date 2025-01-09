@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { appState } from "../state/appState.svelte";
   import Layout from "./Layout.svelte";
   import Logo from "./Logo.svelte";
 </script>
